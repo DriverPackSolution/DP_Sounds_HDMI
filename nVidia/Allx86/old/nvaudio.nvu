@@ -1,0 +1,100 @@
+;-------------------------------------------------------------------
+;   Audio Driver uninstall data file
+;-------------------------------------------------------------------
+; stop the nvmixer otherewise file will not get deleted
+GetReg ProgramFilesDir=HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ProgramFilesDir
+syscallandwait {ProgramFilesDir}\NVIDIA Corporation\NvMixer\NvMixerTray.exe -k
+killapp NVMixertray.exe
+killapp nvatray.exe
+; Uninstalling NVMixer here
+getreg UninstallCommand={uninstregkey}\{D7A6C517-11F2-419F-B5BB-27772B939698}\UninstallString
+if {UninstallCommand}%setup.exe then call uninstallNVMIXER
+; also delete directories that are left behind if they are empty
+del {ProgramFilesDir}\NVIDIA Corporation\NvMixer
+del {ProgramFilesDir}\NVIDIA Corporation
+del {ProgramFilesDir}\Common Files\NVIDIA Shared
+
+; Remove any devices with the following constraint
+UninstallService nvnforce
+call Clean up registry
+
+; Now try to delete files used by audio driver
+set InfMatchingData=Version,Class,Media,Manufacturer,%MfgName%,NVIDIA
+DelOemInfs nv*,{InfMatchingData}
+; make sure  {current File} is undefined before calling DirAndApply
+set current File
+DirAndApply {windir}\Inf\Internet\nv*.inf,DelIniIfMatched {current File},{InfMatchingData}
+
+set InstalledDir={sysdir}
+Call DeleteFiles
+set InstalledDir={windir}\system32
+Call DeleteFiles
+
+RemoveDevice pci,VEN_10DE,MEDIA
+RemoveDevice pci,VEN_10DE,MEDIA
+RemoveDevice ACPI,*PNPB006,MEDIA
+RemoveDevice NVAX,*NFORCE,MEDIA
+RemoveDevice NVAX,NFORCE_VAD,MEDIA
+DelBoot {sysdir}\nvuaudio.exe
+
+[DeleteFiles]
+
+DelBoot {InstalledDir}\ALut.dll
+DelBoot {InstalledDir}\nvack.dll
+DelBoot {InstalledDir}\nvapu.sys
+DelBoot {InstalledDir}\nvarm.sys
+DelBoot {InstalledDir}\nvasio.dll
+DelBoot {InstalledDir}\nvax9x.sys
+DelBoot {InstalledDir}\NVAX.SYS
+DelBoot {InstalledDir}\drivers\NVAX.SYS
+DelBoot {InstalledDir}\drivers\nvax9x.sys
+DelBoot {InstalledDir}\drivers\nvapu.sys
+DelBoot {InstalledDir}\drivers\nvarm.sys
+DelBoot {InstalledDir}\drivers\nvmcp.sys
+DelBoot {SysDir}\nvcoad.dll
+
+; lets remove nvmcp.cat from all known locations if it is found there.
+DelBoot {InstalledDir}\nvmcp.cat
+DelBoot {InstalledDir}\CatRoot\nvmcp.CAT
+DelBoot {sysDir}\CatRoot\{F750E6C3-38EE-11D1-85E5-00C04FC295EE}\nvmcp.CAT
+
+DelBoot {InstalledDir}\nvmcp.inf
+DelBoot {InstalledDir}\nvmcp.sys
+DelBoot {InstalledDir}\nvmcp9x.inf
+DelBoot {InstalledDir}\nvmpu401.sys
+DelBoot {InstalledDir}\nvopenal.dll
+DelBoot {InstalledDir}\OpenAL32.dll
+DelBoot {windir}\APPLOG\NVUAUDIO.LGD
+DelBoot {windir}\APPLOG\NVUAUDIO.LGC
+DelBoot {windir}\APPLOG\NVUNINST.LGD
+DelBoot {windir}\APPLOG\NVUNINST.LGC
+
+DirAndApply {sysdir}\ReinstallBackups\*,call DeleteReinstallBackups
+
+[DeleteReinstallBackups]
+set DriverFilesPath={current file}\driverfiles\nvmcp.*
+set current file
+DirAndApply {DriverFilesPath},del {current file}
+
+[Clean up registry]
+DelReg HKCR\CLSID\{594C9953-1AB0-4459-877A-102DB82CBE39}
+
+DelReg HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run\NVIDIA nForce APU1 Utilities
+
+DelReg HKLM\SYSTEM\{*ControlSet}\Services\nvax
+DelReg HKLM\SYSTEM\{*ControlSet}\Services\nvnforce
+
+DelReg HKLM\SYSTEM\{*ControlSet}\Services\EventLog\System\nvax
+DelReg HKLM\SYSTEM\{*ControlSet}\Services\EventLog\System\nvnforce
+
+DelReg HKLM\SYSTEM\{*ControlSet}\Control\MediaCategories\{8633AF14-ECFF-4320-A962-8E6C2B522B9D}
+
+DelReg HKLM\SOFTWARE\ASIO\NVIDIA ASIO Driver
+DelReg HKLM\Enum\NVAX\*NFORCE
+DelReg HKLM\System\CurrentControlSet\Control\MediaProperties\PrivateProperties\Midi\Ports\NVIDIA(R) DLS Synthesizer
+
+SetReg HKLM\Software\Microsoft\Windows NT\CurrentVersion\drivers.desc\wdmaud.drv=MPU401
+
+[uninstallNVMIXER]
+syscallandwait {UninstallCommand} -norebootdialog
+sleep 3000

@@ -1,0 +1,155 @@
+;;*****************************************************************************
+;;*****************************************************************************
+;;
+;; nvmpu.inf
+;;
+;;
+;; Copyright (c) 2000-2002 NVIDIA Corporation.
+;;
+;;*****************************************************************************
+;;*****************************************************************************
+
+
+
+[Version]
+Signature="$CHICAGO$"
+Class=Media
+ClassGUID={4D36E96C-E325-11CE-BFC1-08002BE10318}
+provider=%MfgName%
+;LayoutFile=layout.inf, layout1.inf, layout2.inf
+DriverVer=08/31/2006,6.14.0466.0
+CatalogFile=nvmpu.cat
+
+[SourceDisksNames]
+1=%DiskDescription%,,,""
+
+[SourceDisksFiles]
+nvmpu401.sys=1,,
+nvumpu.exe=1
+nvmpu.nvu=1
+nvcoam.dll=1
+
+[SourceDisksFiles.x86]
+nvmpu401.sys=1,,
+nvumpu.exe=1,,
+nvmpu.nvu=1,,
+nvcoam.dll=1
+
+[Manufacturer]
+%MfgName%=NVIDIA
+
+[NVIDIA]
+%nvmpu.DeviceDesc%=nvmpu, *PNPB006
+
+
+;; Excluding drivers from the "Add New Hardware" list.
+[ControlFlags]
+ExcludeFromSelect=*
+
+[DestinationDirs]
+DefaultDestDir=10,system32\drivers
+nvmpu.FileList=10,system32\drivers
+Uninstall.FileList=11
+
+[nvmpu.FileList]
+nvmpu401.sys
+
+[Uninstall.FileList]
+nvumpu.exe
+nvmpu.nvu
+
+[Uninstall.CoInst.FileList]
+nvcoam.dll
+
+;;*****************************************************************************
+;; nvmpu 9x
+;;*****************************************************************************
+[nvmpu]
+CopyFiles=nvmpu.FileList,Uninstall.FileList
+AlsoInstall=KS.Registration(ks.inf),WDMAUDIO.Registration(wdmaudio.inf)
+AddReg=nvmpu.AddReg,Uninstall.AddReg
+
+[nvmpu.Interfaces]
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_UART%,WDM.Interface.UART
+
+[nvmpu.Services]
+AddService=nvmpu401,0x00000002, nvmpu401.ServiceInstall
+
+
+;;*****************************************************************************
+;; nvmpu NT
+;;*****************************************************************************
+[nvmpu.NT]
+CopyFiles=nvmpu.FileList
+Include=ks.inf,wdmaudio.inf
+Needs=KS.Registration,WDMAUDIO.Registration
+AddReg=nvmpu.AddReg
+
+[nvmpu.NT.Interfaces]
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_UART%,WDM.Interface.UART
+
+[nvmpu.NT.Services]
+AddService=nvmpu401,0x00000002, nvmpu401.ServiceInstall
+
+
+;;*****************************************************************************
+;; nvmpu Common
+;;*****************************************************************************
+[nvmpu.AddReg]
+HKR,,AssociatedFilters,,"wdmaud"
+HKR,,Driver,,nvmpu401.sys
+HKR,,NTMPDriver,,nvmpu401.sys
+HKR,,DevLoader,,"*ntkern,mmdevldr.vxd"
+
+HKR,Drivers,SubClasses,,"midi"
+HKR,Drivers\midi\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\midi\wdmaud.drv,Description,,%nvmpu.DeviceDesc%
+
+[Uninstall.AddReg]
+HKLM,"Software\Microsoft\Windows\CurrentVersion\Uninstall\NVIDIA MPU Driver"
+HKLM,"Software\Microsoft\Windows\CurrentVersion\Uninstall\NVIDIA MPU Driver",DisplayName,,"NVIDIA MPU Driver"
+HKLM,"Software\Microsoft\Windows\CurrentVersion\Uninstall\NVIDIA MPU Driver",UninstallString,,"%11%\nvuMPU.exe Uninstall %11%\NvMPU.nvu,NVIDIA MPU Driver"
+
+
+[WDM.Interface.UART]
+AddReg=WDM.Interface.UART.AddReg
+
+[WDM.Interface.UART.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%nvmpu.MidiDesc%
+
+[nvmpu401.ServiceInstall]
+DisplayName=%nvmpu.SvcDesc%
+ServiceType=1                ; SERVICE_KERNEL_DRIVER
+StartType=3                  ; SERVICE_DEMAND_START
+ErrorControl=1               ; SERVICE_ERROR_NORMAL
+ServiceBinary=%10%\system32\drivers\nvmpu401.sys
+
+[nvmpu.NT.CoInstallers]
+AddReg=Uninstall.CoInst.AddReg
+CopyFiles=Uninstall.CoInst.FileList
+ 
+[Uninstall.CoInst.AddReg]
+HKR,,CoInstallers32,0x00010000,	"nvcoam.dll,NVCoInstaller"
+HKR, Uninstall, Script,0,"nvmpu.nvu"
+HKR, Uninstall, Name,0,"NVIDIA MPU Driver"
+HKR, Uninstall, INFSrcDir, 0, %01% 
+HKR, Uninstall, Uninstaller,0,"nvumpu.exe"
+
+
+;;*****************************************************************************
+;; Strings
+;;*****************************************************************************
+[Strings]
+MfgName="NVIDIA Corporation"
+DiskDescription="NVIDIA(R) nForce(TM) Audio Driver CD or Disk"
+
+nvmpu.SvcDesc="Service for NVIDIA(R) nForce(TM) MIDI UART"
+nvmpu.DeviceDesc="NVIDIA(R) nForce(TM) MIDI UART"
+nvmpu.MidiDesc="NVIDIA(R) MIDI UART"
+
+Proxy.CLSID="{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_AUDIO="{6994AD04-93EF-11D0-A3CC-00A0C9223196}"
+KSNAME_UART="Uart"
+
+

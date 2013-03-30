@@ -1,0 +1,333 @@
+;******************************************************************
+; Copyright (C) 1996-1998, Rockwell Semiconductor Systems, Inc.   
+; Copyright (C) 1999-2010, Conexant Systems Inc.                   
+;******************************************************************
+;    amdhdmiw.inf
+;
+;Abstract:
+;    INF file for installing the Conexant Function Driver for 
+;    Hermosa High Definition Audio Device
+;                               
+;******************************************************************
+
+[Version]
+Signature="$Windows NT$"
+Class=MEDIA
+ClassGuid={4d36e96c-e325-11ce-bfc1-08002be10318}
+Provider=Conexant
+CatalogFile = amdhdmiw.cat
+DriverVer = 04/29/2010, 4.98.32.0
+ 
+[DestinationDirs]
+DefaultDestDir      =10; dirid = \system32\drivers
+HdAudModel.Copyfiles =10,system32\drivers
+CoInstaller_CopyFiles=10,system32
+Uninstall.CopyFiles=16422,CONEXANT\%UIPATH%
+
+[SourceDisksNames]
+222=%DiskId1%,,,
+
+[SourceDisksFiles]
+CHDMI64.sys=222
+UIU64h.exe=222
+UCI64H55.dll=222
+
+[Manufacturer]
+Conexant = Conexant, NTamd64.6.1
+
+[SignatureAttributes]
+CHDMI64.sys=SignatureAttributes.DRM
+
+[SignatureAttributes.DRM]
+DRMLevel=1300
+ 
+;============================================================================
+
+[ControlFlags]
+ExcludeFromSelect = *
+
+[Conexant.NTamd64.6.1]
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA1,HDAUDIO\FUNC_01&VEN_1002&DEV_793C
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA1,HDAUDIO\FUNC_01&VEN_1002&DEV_791A
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA1,HDAUDIO\FUNC_01&VEN_1002&DEV_791A&SUBSYS_00791A00
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA01
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_00AA0100
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_104D2D00
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_104D2E00
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA01&SUBSYS_104D3A00
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA11
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA09
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA19
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA38
+%HdAudioFunctionDriver.Hermosa5051.DeviceDesc% = HdAudModelA2,HDAUDIO\FUNC_01&VEN_1002&DEV_AA38&SUBSYS_AA381043
+
+[HdAudModelA1.NT]
+Include=ks.inf,wdmaudio.inf
+Needs=KS.Registration,WDMAUDIO.Registration,mssysfx.CopyFilesAndRegister
+CopyFiles = HdAudModel.Copyfiles, Uninstall.CopyFiles
+AddReg    = HdAudModel.AddReg, AC3Cap.A1.AddReg, Oem.AddReg, HdAudInit.AddReg, Uninstall.AddReg
+AddProperty = HdAudBranding.AddProperty
+
+[HdAudModelA2.NT]
+Include=ks.inf,wdmaudio.inf
+Needs=KS.Registration,WDMAUDIO.Registration,mssysfx.CopyFilesAndRegister
+CopyFiles = HdAudModel.Copyfiles, Uninstall.CopyFiles
+AddReg    = HdAudModel.AddReg, AC3Cap.A2.AddReg, Oem.AddReg, HdAudInit.AddReg, Uninstall.AddReg
+AddProperty = HdAudBranding.AddProperty
+
+[HdAudBranding.AddProperty]
+DeviceVendorWebSite,,,,"http://www.conexant.com/products/"
+
+
+[HdAudModelA1.NT.HW]
+AddReg = HdAudSecurity.AddReg
+
+[HdAudModelA2.NT.HW]
+AddReg = HdAudSecurity.AddReg
+
+[HdAudModelA1.NT.Services]
+AddService=CnxtHdmiAudService, 0x00000002, HdAud_Service_Install
+
+[HdAudModelA2.NT.Services]
+AddService=CnxtHdmiAudService, 0x00000002, HdAud_Service_Install
+
+[HdAud_Service_Install]
+DisplayName   = %UAAFunctionDriverForHdAudio.SvcDesc%
+ServiceType   = 1
+StartType     = 3
+ErrorControl  = 1
+ServiceBinary = %10%\system32\drivers\CHDMI64.sys
+
+[Uninstall.CopyFiles]
+UIU64h.exe
+
+[HdAudModelA1.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[HdAudModelA2.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+UCI64H55.dll
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000,"UCI64H55.dll,CAUDCoInstaller"
+
+[Uninstall.AddReg]
+; Files to Delete...
+HKLM, SOFTWARE\%CompanyName%\%ProductName%\Files\SYS,CHDMI64.sys,,"CHDMI64.sys"
+HKLM, SOFTWARE\%CompanyName%\%ProductName%\RegKeys,"Software\Microsoft\Windows\CurrentVersion\Uninstall",,%UIPATH%
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%",DisplayName,,%HDAudioOEMFriendlyName%
+HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%, DisplayVersion,,%VersionInfo%
+HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%, VersionMajor,,4
+HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%, VersionMinor,,98
+HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%, Publisher,,%CompanyName%
+HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%, DisplayIcon,,%16422%\CONEXANT\%UIPATH%\UIU64h.exe
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%UIPATH%",UninstallString,,%16422%\CONEXANT\%UIPATH%\UIU64h.exe -U -Iamdhdmiw.INF
+ 
+[HdAudModel.Copyfiles]
+CHDMI64.sys
+
+[HdAudInit.AddReg]
+;; Sample Section to Illustrate the format for Initialization verbs.
+;; Uncomment and add appropriate verbs as needed.
+;; Note that the top nibble of the verb (Codec Address) must be '0'.
+;HKR,InitVerbs,NumVerbs,0x00010001, 0x00000004 ; Example: Number of verbs in the init section
+;HKR,InitVerbs,0000,    0x00010001, 0x01E71C01 ; Sets first byte of pin config info
+;HKR,InitVerbs,0001,    0x00010001, 0x01E71D44 ; Sets second byte of pin config info
+;HKR,InitVerbs,0002,    0x00010001, 0x01E71E21 ; Sets third byte of pin config info
+;HKR,InitVerbs,0003,    0x00010001, 0x01E71F00 ; Sets fourth byte of pin config info
+
+[HdAudModel.AddReg]
+HKR,,AssociatedFilters,,"wdmaud,swmidi,redbook"
+HKR,,Driver,,CHDMI64.sys
+HKR,,CompanyName,,%CompanyName%
+HKR,,ProductName,,%ProductName%
+
+HKR,Drivers,SubClasses,,"wave,midi,mixer,aux"
+
+HKR,Drivers\wave\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\midi\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\mixer\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\aux\wdmaud.drv,Driver,,wdmaud.drv
+
+HKR,Drivers\wave\wdmaud.drv,Description,,%HdAudioDeviceDescription%
+HKR,Drivers\midi\wdmaud.drv,Description,,%HdAudioDeviceDescription%
+HKR,Drivers\mixer\wdmaud.drv,Description,,%HdAudioDeviceDescription%
+HKR,Drivers\aux\wdmaud.drv,Description,,%HdAudioDeviceDescription%
+
+;;disable SetupPreferredAudioDevices, this will pick up SPDIF as default
+;;HKR,,SetupPreferredAudioDevices,3,01,00,00,00
+HKR,,DisableSetupDiChangeState,1,00,00,00,00 ; Set to 01,00,00,00 to disable proppage restarting of driver on policy change
+; Driver global settings
+;;HKR,GlobalSettings,DcOffsetWorkaround,1,01,00,00,00 ; Applies workaround for recording DC offset issue
+HKR,GlobalSettings,ResetAudioFgOnStart,1,00,00,00,00 ; Enables resetting of audio FG on driver start
+HKR,GlobalSettings,SysAudioTopoMiniportWorkaround,1,01,00,00,00 ; Enables holding ref on topo port & miniport when device is uninstantiated
+
+HKR,GlobalSettings,ValidateCodecWrites,1,00,00,00,00 ; Enables readback of writes to codec registers
+HKR,GlobalSettings,SendFakePcxCfgDefVerbs,1,00,00,00,00 ; Enables sending fake pin config default table
+HKR,GlobalSettings,SpdifOutputEchosRearRenderWhenNoAc3,1,00,00,00,00 ; Slaves rear panel front channels to SPDIF
+HKR,GlobalSettings,HpShutsOffRearSpeaker,1,00,00,00,00 ; Headphone does not mute rear speakers
+HKR,GlobalSettings,HpMode,1,01,00,00,00 ; Headphone is slaved to rear panel front channels
+HKR,GlobalSettings,EnableDynamicDevices,1,00,00,00,00 ; Headphone will come and go dynamically.
+HKR,GlobalSettings,SetSpdifVCfg,1,01,00,00,00 ;  VCfg bit will be set on SPDIF out
+HKR,GlobalSettings,MaxLatencyInMS,1,FF,00,00,00 ; Max Latency Supported in MS
+HKR,GlobalSettings,MaxAc3LatencyInMS,1,19,00,00,00 ; Max Latency for AC3 Streams in MS: 0x19 is 25MS
+HKR,GlobalSettings,StartDelayInMS,1,0A,00,00,00 ; Stream Startup Delay in MS
+HKR,GlobalSettings,MaxReadAheadInMS,1,0A,00,00,00 ; Max amount of data to read ahead in a directsound buffer
+HKR,GlobalSettings,MaxKmixerReadAheadInMS,1,28,00,00,00 ; Max amount of data to read ahead in a Kmixer buffer
+HKR,GlobalSettings,BeamWidth,1,14,00,7f,00 ;; Beam Width and Mic Array Seperation
+HKR,GlobalSettings,MicNrAgressivenessLevel,1,04,00,00,00 ; Mic NR Agressiveness
+HKR,GlobalSettings,SpkrNrAgressivenessLevel,1,00,00,00,00 ; Speaker NR agressiveness
+
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedSampleRates44100,1,00,00,00,00 ; By default, not supported
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedSampleRates48000,1,01,00,00,00 ; By default, only one supported
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedSampleRates96000,1,00,00,00,00 ; By default, not supported
+
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedBitDepths16,1,01,00,00,00 ; By default, only one supported
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedBitDepths20,1,00,00,00,00 ; By default, not supported
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedBitDepths24,1,00,00,00,00 ; By default, not supported
+HKR,GlobalSettings\\SpdifOut,ExternalSpdifReceiverSupportedBitDepths32,1,00,00,00,00 ; By default, not supported
+
+HKR,GlobalSettings\\SpdifIn,SpdifInputBitDepth,1,00,00,00,00 ; By default, 16 bit digital capture
+HKR,GlobalSettings\\SpdifIn,SpdifInputSampleRate,1,01,00,00,00; By default, 48KHz digital capture
+
+HKR,PowerSettings,ConservationIdleTime,1,00,00,00,00
+HKR,PowerSettings,PerformanceIdleTime,1,00,00,00,00
+HKR,PowerSettings,IdlePowerState,1,00,00,00,00
+
+;AmpControl
+HKR,Settings\AmpControl,AmpControlOptions,1,E9,E8,00,01
+HKR,Settings\AmpControl,AmpControlPortOptions,1,64,00,00,00
+
+[AC3Cap.A1.AddReg]
+HKR,Settings\OEM,DigitalOutputDolbyAC3Capability,1,01,00,00,00
+
+[AC3Cap.A2.AddReg]
+HKR,Settings\OEM,DigitalOutputDolbyAC3Capability,1,02,00,00,00
+
+[Oem.AddReg]
+HKR,Settings\OEM,Flags,1,72,38,00,5A
+HKR,Settings\OEM,Flags2,1,A0,31,34,62
+HKR,Settings\OEM,Flags3,1,80,08,00,10
+HKR,Settings\OEM,Flags4,1,80,08,00,00
+
+ 
+;; Settings for system effect ends
+
+[HdAudModelA1.NT.Interfaces]
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_RENDER%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_REALTIME%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_eHDMIOutTopo%, HdAudModel.HDMIOutputTopo
+AddInterface=%KSCATEGORY_TOPOLOGY%,%KSNAME_eHDMIOutTopo%, HdAudModel.HDMIOutputTopo
+
+[HdAudModelA2.NT.Interfaces]
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_RENDER%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_REALTIME%,%KSNAME_eHDMIOutWave%, HdAudModel.HDMIOutputWave
+AddInterface=%KSCATEGORY_AUDIO%,%KSNAME_eHDMIOutTopo%, HdAudModel.HDMIOutputTopo
+AddInterface=%KSCATEGORY_TOPOLOGY%,%KSNAME_eHDMIOutTopo%, HdAudModel.HDMIOutputTopo
+
+; Settings for system effect begins
+;
+; System Effects settings
+[HDAudio.SysFx.Render]
+HKR,"FX\\0",%PKEY_ItemNameDisplay%,,%FX_FriendlyName%
+HKR,"FX\\0",%PKEY_FX_PreMixClsid%,,%FX_PREMIX_CLSID%
+HKR,"FX\\0",%PKEY_FX_PostMixClsid%,,%FX_POSTMIX_CLSID%
+HKR,"FX\\0",%PKEY_FX_UiClsid%,,%FX_UI_CLSID%
+HKR,"FX\\0",%PKEY_FX_Association%,,%KSNODETYPE_ANY%
+; Settings for system effect ends
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; HDMI Out 
+; 
+
+[EPProperties.AddReg]
+HKR,"EP\\0", %PKEY_AudioEndpoint_Association%,,%KSNODETYPE_ANY%
+HKR,"EP\\0", %PKEY_AudioEndpoint_Supports_EventDriven_Mode%,0x00010001,0x1
+HKR,"EP\\0", %PKEY_AudioEngine_OEMFormat%, %REG_BINARY%, 41,00,C8,70,28,00,00,00,FE,FF,02,00,80,BB,00,00,00,EE,02,00,04,00,10,00,16,00,10,00,03,00,00,00,01,00,00,00,00,00,10,00,80,00,00,AA,00,38,9B,71
+
+[HdAudModel.HDMIOutputWave]
+AddReg = HdAudModel.HDMIOutputWave.AddReg
+
+[HdAudModel.HDMIOutputWave.AddReg]
+HKR,,FriendlyName,,%HDMIOutputWaveDeviceName%
+HKR,,CLSID,,%Proxy.CLSID%
+
+[HdAudModel.HDMIOutputTopo]
+AddReg = HdAudModel.HDMIOutputTopo.AddReg, HDAudio.SysFx.Render, EPProperties.AddReg
+
+[HdAudModel.HDMIOutputTopo.AddReg]
+HKR,,FriendlyName,,%HDMIOutputTopoDeviceName%
+HKR,,CLSID,,%Proxy.CLSID%
+
+[HdAudSecurity.AddReg]
+; FILE_DEVICE_SOUND
+HKR,,DeviceType,0x10001,0x0000001D
+; SDDL_DEVOBJ_SYS_ALL_ADM_RWX_WORLD_RWX_RES_RWX
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGWGX;;;WD)(A;;GRGWGX;;;RC)"
+
+[Strings]
+CompanyName = "Conexant"
+ProductName = "Conexant Audio Driver For AMD HDMI Codec"
+VersionInfo = "4.98.32.0"
+ 
+DiskId1 = "Conexant Audio Driver For AMD HDMI Codec Installation Disk"
+ 
+HdAudioFunctionDriver.Hermosa5051.DeviceDesc = "Conexant Audio Driver For AMD HDMI Codec"
+ 
+UAAFunctionDriverForHdAudio.SvcDesc = "Conexant UAA HDMI Function Driver for High Definition Audio Service"
+
+;;use one name, we are not supporting dynamic subdevices
+HDAudioOEMFriendlyName   = "Conexant Audio Driver For AMD HDMI Codec"
+DigitalOutputWaveDeviceName =      "Conexant HDMI Audio digital out"
+
+;
+; HDMI Out 
+;
+
+HDMIOutputWaveDeviceName =   "Conexant HD Audio HDMI out"       ; {PlaceHolder="HD Audio"}
+HDMIOutputTopoDeviceName =   "Conexant HD Audio HDMI out mixer" ; {PlaceHolder="HD Audio"}
+KSNAME_eHDMIOutWave      = "eHDMIOutputWave" ; non-localizable
+KSNAME_eHDMIOutTopo      = "eHDMIOutputTopo" ; non-localizable
+ 
+DigitalOutputTopoDeviceName =      "Conexant HDMI Audio digital out mixer"
+ 
+HdAudioDeviceDescription = "Conexant Audio Driver For AMD HDMI Codec"
+
+
+KSCATEGORY_AUDIO     = "{6994AD04-93EF-11D0-A3CC-00A0C9223196}" ; non-localizable
+KSCATEGORY_RENDER    = "{65E8773E-8F56-11D0-A3B9-00A0C9223196}" ; non-localizable
+KSCATEGORY_CAPTURE   = "{65E8773D-8F56-11D0-A3B9-00A0C9223196}" ; non-localizable
+KSCATEGORY_TOPOLOGY  = "{DDA54A40-1E4C-11D1-A050-405705C10000}" ; non-localizable
+KSCATEGORY_REALTIME  = "{EB115FFC-10C8-4964-831D-6DCB02E6F23F}" ; non-localizable
+Proxy.CLSID 	     = "{17CCA71B-ECD7-11D0-B908-00A0C9223196}" ; non-localizable
+
+;Information for FX
+; PropertyKeys
+PKEY_FX_Association  = "{D04E05A6-594B-4fb6-A80D-01AF5EED7D1D},0"
+PKEY_FX_PreMixClsid  = "{D04E05A6-594B-4fb6-A80D-01AF5EED7D1D},1"
+PKEY_FX_PostMixClsid = "{D04E05A6-594B-4fb6-A80D-01AF5EED7D1D},2"
+PKEY_FX_UiClsid      = "{D04E05A6-594B-4fb6-A80D-01AF5EED7D1D},3"
+PKEY_ItemNameDisplay = "{B725F130-47EF-101A-A5F1-02608C9EEBAC},10"
+
+SYSFX_PREMIX_CLSID   = "{19A120F2-EB17-4913-B7F0-C7970A666584}"
+SYSFX_POSTMIX_CLSID  = "{C21FE761-A4DE-4060-B707-0E0C1FAF9AC4}"
+
+FX_UI_CLSID          = "{5860E1C5-F95C-4a7a-8EC8-8AEF24F379A1}"
+KSNODETYPE_ANY       = "{00000000-0000-0000-0000-000000000000}"
+FX_PREMIX_CLSID      = "{62dc1a93-ae24-464c-a43e-452f824c4250}"
+FX_POSTMIX_CLSID     = "{637c490d-eee3-4c0a-973f-371958802da2}"
+FX_FriendlyName      = "Microsoft Audio Home Theater Effects"
+
+PKEY_AudioEndpoint_Association  = "{1DA5D803-D492-4EDD-8C23-E0C0FFEE7F0E},2"
+PKEY_AudioEngine_OEMFormat      = "{E4870E26-3CC5-4CD2-BA46-CA0A9A70ED04},3"
+PKEY_AudioEndpoint_Supports_EventDriven_Mode = "{1DA5D803-D492-4EDD-8C23-E0C0FFEE7F0E},7"
+REG_BINARY          = 0x00000001
+
+UIPATH="CNXT_AUDIO_HDA_HDMI"

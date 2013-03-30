@@ -1,0 +1,20 @@
+; Remove any NVIDIA device driver if present
+RemoveDevice ACPI,*PNPB006,Media
+
+; Now try to delete files used by System Management Bus driver
+DelOemInfs nv*,Manufacturer,%MfgName%,NVIDIA,SourceDisksFiles,nvmpu.nvu,1
+
+DelBoot {sysdir}\nvmpu9x.inf
+
+; also delete its uninstaller binary
+DelBoot {sysdir}\nvumpu.exe
+DelBoot {sysdir}\nvcoam.dll
+
+DelBoot {sysdir}\nvmpu401.sys
+DelBoot {sysdir}\drivers\nvmpu401.sys
+DelBoot {windir}\system32\nvmpu401.sys
+DelBoot {windir}\system32\drivers\nvmpu401.sys
+DelBoot {windir}\APPLOG\NVUMPU.LGD
+DelBoot {windir}\APPLOG\NVUMPU.LGC
+DelBoot {windir}\APPLOG\NVUNINST.LGD
+DelBoot {windir}\APPLOG\NVUNINST.LGC
